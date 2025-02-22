@@ -7,13 +7,16 @@ statement: variable_declaration ";"
     | assignment ";"
     | print_statement ";"
     | function_call ";"
+    | loop
     
 variable_declaration: TYPE VAR "=" expr
+
+assignment_aux: VAR ASS_OP expr
+        | VAR "++"
+        | VAR "--"
                     
 assignment: VAR "=" expr
-    | VAR ASS_OP expr
-    | VAR "++"
-    | VAR "--"
+        | assignment_aux
         
 expr: VAR
     | NUMBER
@@ -40,12 +43,25 @@ function_call: VAR "(" arg_list? ")"
 arg_list: expr "," arg_list
     | expr
 
+loop: for_loop | while_loop
+
+for_loop: "for" "(" variable_declaration ";" for_cond ";" for_update ")" "{" statement* "}" 
+
+for_cond: bool_expr
+
+for_update: assignment_aux
+
+while_loop: "while" "(" bool_expr ")" "{" statement* "}"
+
+bool_expr: expr LOGICAL_OP expr
+    | function_call
+
 TYPE.2: "int" | "double" | "string" | "set" | "array" | "tuplo"
 VAR: /[a-z]+(_[a-z]+)*/
 NUMBER: /-?\\d+(\\.\\d+)?/
 STRING: /".*"/
 OP: "+" | "-" | "*" | "/"
-LOGICAL_OP: "==" | "!=" | "<=" | ">="
+LOGICAL_OP: "==" | "!=" | "<=" | ">=" | "<" | ">"
 ASS_OP: "+=" | "-=" | "*=" | "/="
 
 %import common.WS
@@ -55,17 +71,16 @@ ASS_OP: "+=" | "-=" | "*=" | "/="
 parser = Lark(grammar, start='start', parser='lalr')
 
 code = """
-func add(int x, int y) {
-    int sum = x+y;
-    return sum;
-}
-
-
 func main() {
-    int x = 10;
-    int y = 5;
-    int sum = add(x,y);
-    print(sum);
+    int i = 0;
+    while (i <= 5) {
+        print(i);
+        i++;
+    }
+    
+    for (int j = 0; j < 3; j++) {
+        print(j);
+    }
     return 0;
 }
 """

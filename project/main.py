@@ -1,7 +1,7 @@
 from lark import Lark
 
 grammar = """
-start: function_declaration* TYPE "func" "main" "()" "{" statement* return_statement "}"
+start: function_declaration* type "func" "main" "()" "{" statement* return_statement "}"
 
 statement: variable_declaration ";"
     | assignment ";"
@@ -12,7 +12,7 @@ statement: variable_declaration ";"
     | "break" ";"
     | "continue" ";"
 
-variable_declaration: TYPE VAR "=" expr
+variable_declaration: type VAR "=" expr
 
 assignment_aux: VAR ASS_OP expr
         | VAR "++"
@@ -27,19 +27,21 @@ expr: VAR
     | function_call
     | expr OP expr
     | expr LOGICAL_OP expr
+    | array
+    | set
     
 print_statement: "print" "(" VAR ")"
         | "print" "(" NUMBER ")"
         | "print" "(" STRING ")"
         
-function_declaration: TYPE "func" VAR "(" param_list? ")" "{" statement* return_statement "}"
+function_declaration: type "func" VAR "(" param_list? ")" "{" statement* return_statement "}"
 
 return_statement: "return" expr ";"
 
 param_list: param "," param_list
     | param
 
-param: TYPE VAR
+param: type VAR
 
 function_call: VAR "(" arg_list? ")"
 
@@ -73,7 +75,11 @@ default_statement: "default" ":" statement*
 bool_expr: expr LOGICAL_OP expr
     | function_call
 
-TYPE.2: "int" | "double" | "string" | "set" | "array" | "tuplo"
+array: "[" [expr ("," expr)*] "]"
+
+set: "{" [expr ("," expr)*] "}"
+
+type: "int" | "double" | "string" | "array" | "tuplo"
 VAR: /[a-z]+(_[a-z]+)*/
 NUMBER: /-?\\d+(\\.\\d+)?/
 STRING: /".*"/
@@ -92,6 +98,10 @@ int func add(int a, int b) {
 
 int func main() {
     int i = 0;
+    
+    int my_arr = [1,2,3,4,5];
+    int my_set = {1, 2, 3, 4, 5};
+    
     while (i <= 5) {
         print(i);
         i++;

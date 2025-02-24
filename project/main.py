@@ -1,7 +1,7 @@
 from lark import Lark
 
 grammar = """
-start: function_declaration* "func" "main" "()" "{" statement* return_statement "}"
+start: function_declaration* TYPE "func" "main" "()" "{" statement* return_statement "}"
 
 statement: variable_declaration ";"
     | assignment ";"
@@ -90,7 +90,7 @@ int func add(int a, int b) {
     return a + b;
 }
 
-func main() {
+int func main() {
     int i = 0;
     while (i <= 5) {
         print(i);

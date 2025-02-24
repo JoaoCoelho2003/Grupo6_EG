@@ -32,7 +32,7 @@ print_statement: "print" "(" VAR ")"
         | "print" "(" NUMBER ")"
         | "print" "(" STRING ")"
         
-function_declaration: "func" VAR "(" param_list? ")" "{" statement* return_statement "}"
+function_declaration: TYPE "func" VAR "(" param_list? ")" "{" statement* return_statement "}"
 
 return_statement: "return" expr ";"
 
@@ -86,7 +86,7 @@ ASS_OP: "+=" | "-=" | "*=" | "/="
 """
 
 code = """
-func add(int a, int b) {
+int func add(int a, int b) {
     return a + b;
 }
 
